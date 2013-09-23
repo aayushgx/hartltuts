@@ -3,6 +3,8 @@ require 'spec_helper'
 describe "StaticPages" do
   
   let(:base_title) {"Ruby on Rails tuts"}
+  
+  
 =begin  
   describe "GET /static_pages" do
     it "works! (now write some real specs)" do
