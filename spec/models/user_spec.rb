@@ -21,4 +21,39 @@ describe User do
   	it { should_not be_valid }
   end
 
+  describe "when name is too long " do
+  	before { @user.name = "a"*51 }
+  	it { should_not be_valid }
+  end
+
+  describe "when email is invalid" do
+  	it "should be invalid" do
+  		addresses = %w[user@foo,com user_at_foo.org example.user@foo.
+                     foo@bar_baz.com foo@bar+baz.com]
+  		addresses.each do |invalid_add|
+  			@user.email = invalid_add
+  			expect(@user).not_to be_valid
+  		end
+  	end
+  end
+
+  describe "when email is invalid" do
+  	it "should be valid" do
+  		addresses = %w[user@foo.COM A_US-er@f.b.org frst.lst@foo.jp a+b@baz.cn]
+  		addresses.each do |valid_add|
+  			@user.email = valid_add
+  			expect(@user).to be_valid
+  		end
+  	end
+  end
+
+  describe "when email address is already taken" do
+  	before do
+  		user_with_same_email = @user.dup
+  		user_with_same_email.email = @user.email.upcase
+  		user_with_same_email.save
+  	end
+  	it { should_not be_valid }
+  end
+
 end
