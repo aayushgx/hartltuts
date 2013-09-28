@@ -44,7 +44,7 @@ describe User do
   describe "when email is invalid" do
   	it "should be invalid" do
   		addresses = %w[user@foo,com user_at_foo.org example.user@foo.
-                     foo@bar_baz.com foo@bar+baz.com]
+                     foo@bar_baz.com foo@bar+baz.com foo@bar..com]
   		addresses.each do |invalid_add|
   			@user.email = invalid_add
   			expect(@user).not_to be_valid
@@ -52,7 +52,7 @@ describe User do
   	end
   end
 
-  describe "when email is invalid" do
+  describe "when email is valid" do
   	it "should be valid" do
   		addresses = %w[user@foo.COM A_US-er@f.b.org frst.lst@foo.jp a+b@baz.cn]
   		addresses.each do |valid_add|
@@ -71,10 +71,21 @@ describe User do
   	it { should_not be_valid }
   end
 
-  describe "when password doesn't match confirmation" do
-  	before { @user.password_confirmation = "mismatch" }
-  	it { should_not be_valid }
+
+  describe "email address with mixed case" do
+    let(:mixed_case_email) { "Foo@ExAMPle.CoM" }
+
+    it "should be saved as all lower-case" do
+      @user.email = mixed_case_email
+      @user.save
+      expect(@user.reload.email).to eq mixed_case_email.downcase
+    end
+  	describe "when password doesn't match confirmation" do
+  		before { @user.password_confirmation = "mismatch" }
+  		it { should_not be_valid }
+ 	 end
   end
+
 
   describe " return value of authenticate method " do
   	before { @user.save }
